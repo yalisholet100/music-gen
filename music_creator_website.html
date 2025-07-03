@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Creator Studio - אתר יצירת שירים</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2em;
+        }
+
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .auth-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .google-btn {
+            background: #4285f4;
+            color: white;
+        }
+
+        .apple-btn {
+            background: #000;
+            color: white;
+        }
+
+        .microsoft-btn {
+            background: #0078d4;
+            color: white;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .upload-area:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragging {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #764ba2;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .option-card.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .process-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .process-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .process-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            display: none;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .results-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            display: none;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .download-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .download-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .mp3-btn {
+            background: #ff6b6b;
+        }
+
+        .wav-btn {
+            background: #4ecdc4;
+        }
+
+        .mp4-btn {
+            background: #45b7d1;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .format-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .format-option {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .format-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .format-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .style-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .style-option {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .style-option:hover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
+        }
+
+        .style-option.selected {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.2);
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .logged-in {
+            display: none;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .processing {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .auth-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Music Creator Studio</h1>
+            <p class="subtitle">יצירת שירים מתקדמת | מיזוג | שינוי סגנונות | יצירת וידאו</p>
+            <div class="user-info hidden" id="userInfo">
+                <span id="userName">ברוכים הבאים!</span>
+                <button onclick="logout()" style="background: none; border: none; color: white; cursor: pointer; margin-right: 10px;">התנתק</button>
+            </div>
+        </header>
+
+        <div class="auth-section" id="authSection">
+            <h2>התחברות לאתר</h2>
+            <div class="auth-buttons">
+                <button class="auth-btn google-btn" onclick="login('google')">
+                    <span>📧</span> התחבר עם Google
+                </button>
+                <button class="auth-btn apple-btn" onclick="login('apple')">
+                    <span>🍎</span> התחבר עם Apple
+                </button>
+                <button class="auth-btn microsoft-btn" onclick="login('microsoft')">
+                    <span>🖥️</span> התחבר עם Microsoft
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content logged-in" id="mainContent">
+            <div class="section">
+                <h2>📁 העלאת קבצים</h2>
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📁</div>
+                    <p>גרור קבצי MP3/WAV לכאן או לחץ לבחירה</p>
+                    <small>תומך בפורמטים: MP3, WAV</small>
+                </div>
+                <input type="file" id="fileInput" accept=".mp3,.wav" multiple style="display: none;">
+                <div id="fileList"></div>
+                
+                <h3>📝 או צור שיר חדש</h3>
+                <textarea class="text-input" placeholder="הכנס מילים לשיר או תיאור של השיר שברצונך ליצור..." id="songText"></textarea>
+                
+                <h3>🎨 בחר סגנון מוזיקלי</h3>
+                <div class="style-options">
+                    <div class="style-option" onclick="selectStyle(this, 'pop')">🎤 פופ</div>
+                    <div class="style-option" onclick="selectStyle(this, 'rock')">🎸 רוק</div>
+                    <div class="style-option" onclick="selectStyle(this, 'jazz')">🎷 ג'אז</div>
+                    <div class="style-option" onclick="selectStyle(this, 'classical')">🎼 קלאסי</div>
+                    <div class="style-option" onclick="selectStyle(this, 'electronic')">🎧 אלקטרוני</div>
+                    <div class="style-option" onclick="selectStyle(this, 'rap')">🎤 ראפ</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>⚙️ אפשרויות עיבוד</h2>
+                <div class="options-grid">
+                    <div class="option-card" onclick="selectOption(this, 'create')">
+                        <div style="font-size: 2em; margin-bottom: 10px;">✨</div>
+                        <h3>יצירת שיר חדש</h3>
+                        <p>צור שיר חדש לגמרי</p>
+                    </div>
+                    <div class="option-card" onclick="selectOption(this, 'merge')">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🔄</div>
+                        <h3>מיזוג שירים</h3>
+                        <p>שלב בין שירים שונים</p>
+                    </div>
+                    <div class="option-card" onclick="selectOption(this, 'style')">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🎨</div>
+                        <h3>שינוי סגנון</h3>
+                        <p>שנה את הסגנון המוזיקלי</p>
+                    </div>
+                    <div class="option-card" onclick="selectOption(this, 'cover')">
+                        <div style="font-size: 2em; margin-bottom: 10px;">🎵</div>
+                        <h3>יצירת קאבר</h3>
+                        <p>צור גרסה חדשה לשיר</p>
+                    </div>
+                </div>
+                
+                <h3>📤 פורמט יצוא</h3>
+                <div class="format-options">
+                    <div class="format-option" onclick="selectFormat(this, 'mp3')">🎵 MP3</div>
+                    <div class="format-option" onclick="selectFormat(this, 'wav')">🎶 WAV</div>
+                    <div class="format-option" onclick="selectFormat(this, 'mp4')">🎬 MP4</div>
+                </div>
+                
+                <button class="process-btn" onclick="startProcessing()">🚀 התחל עיבוד</button>
+            </div>
+        </div>
+
+        <div class="progress-section" id="progressSection">
+            <h2>⏳ מעבד את השיר...</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">מתחיל עיבוד... 0%</div>
+            <div style="margin-top: 20px;">
+                <div class="processing" style="font-size: 3em;">🎵</div>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <h2>✅ העיבוד הושלם בהצלחה!</h2>
+            <div style="text-align: center; margin: 20px 0;">
+                <div style="font-size: 4em; margin-bottom: 15px;">🎉</div>
+                <p style="font-size: 18px; color: #666;">השיר שלך מוכן להורדה!</p>
+            </div>
+            <div class="download-options">
+                <button class="download-btn mp3-btn" onclick="downloadFile('mp3')">🎵 הורד MP3</button>
+                <button class="download-btn wav-btn" onclick="downloadFile('wav')">🎶 הורד WAV</button>
+                <button class="download-btn mp4-btn" onclick="downloadFile('mp4')">🎬 הורד MP4</button>
+            </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="process-btn" onclick="resetProcess()">🔄 צור שיר חדש</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedOption = null;
+        let selectedStyle = null;
+        let selectedFormat = 'mp3';
+        let uploadedFiles = [];
+        let currentUser = null;
+
+        // Authentication functions
+        function login(provider) {
+            // Simulate login process
+            const users = {
+                google: { name: 'משתמש Google', email: 'user@gmail.com' },
+                apple: { name: 'משתמש Apple', email: 'user@icloud.com' },
+                microsoft: { name: 'משתמש Microsoft', email: 'user@outlook.com' }
+            };
+
+            currentUser = users[provider];
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userName').textContent = `שלום ${currentUser.name}`;
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('userInfo').classList.add('hidden');
+            resetProcess();
+        }
+
+        // File upload functions
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            handleFiles(e.target.files);
+        });
+
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragging');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragging');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragging');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function handleFiles(files) {
+            uploadedFiles = Array.from(files);
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            uploadedFiles.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.style.cssText = 'background: rgba(102, 126, 234, 0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border-right: 4px solid #667eea;';
+                fileItem.innerHTML = `
+                    <strong>${file.name}</strong> 
+                    <span style="color: #666;">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        // Selection functions
+        function selectOption(element, option) {
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedOption = option;
+        }
+
+        function selectStyle(element, style) {
+            document.querySelectorAll('.style-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedStyle = style;
+        }
+
+        function selectFormat(element, format) {
+            document.querySelectorAll('.format-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedFormat = format;
+        }
+
+        // Processing functions
+        function startProcessing() {
+            const songText = document.getElementById('songText').value;
+            
+            if (!selectedOption) {
+                alert('אנא בחר אפשרות עיבוד');
+                return;
+            }
+
+            if (!selectedStyle) {
+                alert('אנא בחר סגנון מוזיקלי');
+                return;
+            }
+
+            if (uploadedFiles.length === 0 && !songText.trim()) {
+                alert('אנא העלה קבצים או הכנס טקסט לשיר');
+                return;
+            }
+
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('progressSection').style.display = 'block';
+            
+            simulateProcessing();
+        }
+
+        function simulateProcessing() {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            let progress = 0;
+            
+            const steps = [
+                'מתחיל עיבוד...',
+                'מנתח קבצי אודיו...',
+                'מעבד מלודיות...',
+                'מיישם סגנון מוזיקלי...',
+                'מייצר הרמוניות...',
+                'מעבד אפקטים...',
+                'יוצר וידאו...',
+                'משלים עיבוד...',
+                'מכין קבצי יצוא...',
+                'מסיים...'
+            ];
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 15 + 5;
+                if (progress > 100) progress = 100;
+                
+                progressFill.style.width = progress + '%';
+                
+                const stepIndex = Math.floor(progress / 10);
+                const currentStep = steps[Math.min(stepIndex, steps.length - 1)];
+                progressText.textContent = `${currentStep} ${Math.round(progress)}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('progressSection').style.display = 'none';
+                        document.getElementById('resultsSection').style.display = 'block';
+                    }, 500);
+                }
+            }, Math.random() * 500 + 200);
+        }
+
+        // Download functions
+        function downloadFile(format) {
+            // Simulate file download
+            const filename = `my-song-${Date.now()}.${format}`;
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = filename;
+            
+            // Create a temporary blob for demonstration
+            const blob = new Blob(['This is a simulated music file'], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert(`מוריד קובץ: ${filename}`);
+        }
+
+        function resetProcess() {
+            document.getElementById('progressSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // Reset form
+            document.getElementById('songText').value = '';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('fileList').innerHTML = '';
+            uploadedFiles = [];
+            
+            // Reset selections
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelectorAll('.style-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelectorAll('.format-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            selectedOption = null;
+            selectedStyle = null;
+            selectedFormat = 'mp3';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default format selection
+            document.querySelector('.format-option[onclick*="mp3"]').classList.add('selected');
+        });
+    </script>
+</body>
+</html>
